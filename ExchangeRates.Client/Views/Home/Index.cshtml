@@ -1,0 +1,55 @@
+﻿@using ExchangeRates.Client.Models
+@using ExchangeRates.Client.DataStorages
+@model HomePageViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-auto">
+                    @Html.TextBox("CurrentValue", null, new
+                    {
+                        @id = "SetValue",
+                        type = "number",
+                        min = 0,
+                        placeholder = "Введите сумму"
+                    })
+                </div>
+                <div class="col-auto">
+                    <p>*</p>
+                </div>
+                <div class="col-auto" id="currencies">
+                    @Html.DropDownListFor(m => m.Name, new SelectList(
+                   new Repository().Valutes, "Value", "Name"), "Выберите валюту", new
+                   {
+                       @id = "Currency"
+                   })
+                </div>
+                <div class="col-auto">
+                    <p>=</p>
+                </div>
+                <div class="col-auto">
+                    @Html.TextBoxFor(m => m.Value, new { @id = "Value", @readonly = "true"})
+                    <i>₽</i>
+                </div>
+            </div>
+           
+        </div>
+    <script>
+        $(document).ready(function () {
+            $("#Currency").css("height", $("#Value").css("height"))
+            
+        });
+        $("#Currency").change(function () {
+            var v1 = accounting.unformat($(":selected").val());
+            var v2 = $("#SetValue").val();
+            $("#Value").val(accounting.toFixed((v1 * v2), 4));
+        });
+        $("#SetValue").keyup(function () {
+            var v1 = accounting.unformat($(":selected").val());
+            var v2 = $("#SetValue").val();
+            $("#Value").val(accounting.toFixed((v1 * v2), 4));
+        });
+    </script>
